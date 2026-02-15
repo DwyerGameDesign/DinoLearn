@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Dino Learn - Interactive Learning for Kids</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Home Screen -->
+  <div class="screen home-screen active" id="homeScreen">
+    <div class="dino-title-emoji">🦖</div>
+    <div class="app-title">DINO LEARN!</div>
+    <div class="game-buttons">
+      <button class="game-btn btn-spell" data-game="spell">🔤 Spell It!</button>
+      <button class="game-btn btn-count" data-game="count">🥚 Count!</button>
+      <button class="game-btn btn-match" data-game="match">🃏 Match!</button>
+      <button class="game-btn btn-dice" data-game="dice">🎲 Dice Add!</button>
+    </div>
+  </div>
+
+  <!-- Spelling Game Screen -->
+  <div class="screen spell-screen" id="spellScreen">
+    <div class="game-header">
+      <button class="home-btn">🏠</button>
+      <div class="progress-dots" id="spellProgress"></div>
+      <div style="display: flex; align-items: center; gap: clamp(8px, 2vw, 12px);">
+        <button class="toggle-btn" id="wordNameToggle" title="Toggle word name">👁️</button>
+        <div class="star-counter">⭐ <span id="spellStars">0</span></div>
+      </div>
+    </div>
+    <div class="spell-content">
+      <div class="spell-emoji" id="spellEmoji"></div>
+      <div class="spell-prompt" id="spellPrompt"></div>
+      <div class="letter-slots" id="letterSlots"></div>
+      <div class="letter-buttons" id="letterButtons"></div>
+    </div>
+  </div>
+
+  <!-- Counting Game Screen -->
+  <div class="screen count-screen" id="countScreen">
+    <div class="game-header">
+      <button class="home-btn">🏠</button>
+      <div class="progress-dots" id="countProgress"></div>
+      <div class="star-counter">⭐ <span id="countStars">0</span></div>
+    </div>
+    <div class="count-content">
+      <div class="count-prompt" id="countPrompt">Tap each egg to count!</div>
+      <div class="egg-field" id="eggField"></div>
+      <div class="number-buttons" id="numberButtons" style="display: none;"></div>
+    </div>
+  </div>
+
+  <!-- Memory Match Game Screen -->
+  <div class="screen match-screen" id="matchScreen">
+    <div class="game-header">
+      <button class="home-btn">🏠</button>
+      <div class="progress-dots" id="matchProgress"></div>
+      <div class="star-counter">⭐ <span id="matchStars">0</span></div>
+    </div>
+    <div class="match-content">
+      <div class="card-grid" id="cardGrid"></div>
+    </div>
+  </div>
+
+  <!-- Dice Add Game Screen -->
+  <div class="screen dice-screen" id="diceScreen">
+    <div class="game-header">
+      <button class="home-btn">🏠</button>
+      <div class="progress-dots" id="diceProgress"></div>
+      <div class="star-counter">⭐ <span id="diceStars">0</span></div>
+    </div>
+    <div class="dice-content">
+      <div class="dice-dino" id="diceDino">🦖</div>
+      <div class="dice-container">
+        <div class="die" id="die1">⚀</div>
+        <div class="dice-plus">+</div>
+        <div class="die" id="die2">⚀</div>
+      </div>
+      <div class="dice-equation" id="diceEquation"></div>
+      <button class="roll-btn" id="rollBtn">🎲 ROLL!</button>
+      <div class="dice-answer-buttons" id="diceAnswerButtons" style="display: none;"></div>
+    </div>
+  </div>
+
+  <!-- Celebration Overlay -->
+  <div class="celebration-overlay" id="celebrationOverlay">
+    <div class="celebration-dino">🦖</div>
+    <div class="celebration-text" id="celebrationText"></div>
+    <button class="next-btn" id="nextBtn">NEXT ➡️</button>
+  </div>
+
+  <script src="audio.js"></script>
+  <script src="games.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>
