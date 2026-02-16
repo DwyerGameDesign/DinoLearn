@@ -17,6 +17,7 @@ document.querySelectorAll('.game-btn').forEach(btn => {
     else if (game === 'count') startCountGame();
     else if (game === 'match') startMatchGame();
     else if (game === 'dice') startDiceGame();
+    else if (game === 'letters') startLettersGame();
   });
 });
 

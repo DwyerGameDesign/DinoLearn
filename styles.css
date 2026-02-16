@@ -36,21 +36,8 @@ body {
   position: relative;
 }
 
-@font-face {
-  font-family: 'Lilita One';
-  font-style: normal;
-  font-weight: 400;
-  src: url('data:font/woff2;base64,') format('woff2');
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Fredoka';
-  font-style: normal;
-  font-weight: 400;
-  src: url('data:font/woff2;base64,') format('woff2');
-  font-display: swap;
-}
+/* Fonts: Using system fonts with fallbacks
+   'Lilita One' and 'Fredoka' will fall back to system fonts if not available */
 
 .screen {
   display: none;
@@ -132,6 +119,7 @@ body {
 .btn-count { background: linear-gradient(135deg, var(--dino-purple), #c39bd3); }
 .btn-match { background: linear-gradient(135deg, var(--dino-teal), #7fdecd); }
 .btn-dice { background: linear-gradient(135deg, #3498db, #2171a6); }
+.btn-letters { background: linear-gradient(135deg, #f39c12, #e67e22); }
 
 /* Game Screen Header */
 .game-header {
@@ -376,7 +364,7 @@ body {
   flex-wrap: wrap;
   gap: clamp(10px, 2.5vw, 14px);
   justify-content: center;
-  max-width: clamp(400px, 55vw, 520px);
+  max-width: clamp(500px, 70vw, 650px);
   padding: clamp(8px, 2vw, 16px);
 }
 
@@ -865,6 +853,89 @@ body {
     transform: translateY(110vh) rotate(360deg);
     opacity: 0;
   }
+}
+
+/* Letter Match Game */
+.letters-screen {
+  background: linear-gradient(to bottom, #fff4e6, #ffe0b3);
+}
+
+.letters-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: clamp(16px, 4vw, 28px);
+  padding: clamp(8px, 2vw, 16px) clamp(12px, 3vw, 24px);
+  padding-top: clamp(4px, 1vw, 8px);
+}
+
+.letters-prompt {
+  font-family: 'Lilita One', sans-serif;
+  font-size: clamp(28px, 7vw, 44px);
+  color: #d35400;
+  text-shadow: 2px 2px 0 rgba(255,255,255,0.8);
+  text-align: center;
+  margin-bottom: clamp(-4px, -1vw, -8px);
+}
+
+.letters-lowercase {
+  font-family: 'Lilita One', sans-serif;
+  font-size: clamp(120px, 30vw, 180px);
+  color: #d35400;
+  text-shadow: 4px 4px 0 rgba(0,0,0,0.3);
+  margin-bottom: clamp(8px, 2vw, 16px);
+  animation: emojiPop 0.5s ease-out;
+}
+
+.letters-uppercase-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(12px, 3vw, 18px);
+  justify-content: center;
+  max-width: 90vw;
+}
+
+.letters-uppercase-btn {
+  width: clamp(85px, 21vw, 125px);
+  height: clamp(85px, 21vw, 125px);
+  border: 6px solid var(--bark);
+  border-radius: clamp(14px, 3.5vw, 20px);
+  background: white;
+  font-family: 'Lilita One', sans-serif;
+  font-size: clamp(44px, 11vw, 68px);
+  color: var(--bark);
+  cursor: pointer;
+  box-shadow: 0 6px 0 #7a3a10, 0 8px 16px rgba(0,0,0,0.2);
+  transition: transform 0.1s, box-shadow 0.1s, opacity 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.letters-uppercase-btn:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 #7a3a10, 0 3px 6px rgba(0,0,0,0.15);
+}
+
+.letters-uppercase-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.letters-uppercase-btn.correct {
+  background: var(--correct);
+  color: white;
+  border-color: var(--correct);
+  animation: slotPop 0.3s ease-out;
+}
+
+.letters-uppercase-btn.wrong {
+  background: var(--wrong);
+  color: white;
+  border-color: var(--wrong);
+  animation: slotShake 0.4s ease-in-out;
 }
 
 @media (orientation: portrait) {

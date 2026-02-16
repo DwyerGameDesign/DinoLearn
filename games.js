@@ -59,7 +59,6 @@ const SPELL_WORDS = [
   { emoji: '🪁', word: 'KITE', hint: 'Kite' },
   { emoji: '🛶', word: 'BOAT', hint: 'Boat' },
   { emoji: '🎵', word: 'SONG', hint: 'Song' },
-  { emoji: '🧊', word: 'ICE', hint: 'Ice' },
   { emoji: '🏖️', word: 'SAND', hint: 'Sand' }
 ];
 
@@ -688,6 +687,105 @@ function handleDiceAnswer(num, btn, correctSum) {
     setTimeout(() => {
       btn.classList.remove('wrong');
       dino.className = 'dice-dino';
+    }, 800);
+  }
+}
+
+// Letter Match Game (Lowercase to Uppercase)
+const ALL_LETTERS = 'abcdefghijklmnopqrstuvwxyz'.split('');
+
+let lettersGame = {
+  currentRound: 0,
+  letters: [],
+  currentLetter: null,
+  stars: 0
+};
+
+function startLettersGame() {
+  // Pick 5 random letters
+  const shuffled = [...ALL_LETTERS].sort(() => Math.random() - 0.5).slice(0, 5);
+  lettersGame.letters = shuffled;
+  lettersGame.currentRound = 0;
+  lettersGame.stars = 0;
+  updateLettersProgress();
+  updateLettersStars();
+  showLettersRound();
+  showScreen('lettersScreen');
+}
+
+function updateLettersProgress() {
+  const container = document.getElementById('lettersProgress');
+  container.innerHTML = '';
+  for (let i = 0; i < 5; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'progress-dot';
+    if (i < lettersGame.currentRound) dot.classList.add('filled');
+    else if (i === lettersGame.currentRound) dot.classList.add('current');
+    container.appendChild(dot);
+  }
+}
+
+function updateLettersStars() {
+  document.getElementById('lettersStars').textContent = lettersGame.stars;
+}
+
+function showLettersRound() {
+  if (lettersGame.currentRound >= lettersGame.letters.length) {
+    showCelebration('letters');
+    return;
+  }
+
+  lettersGame.currentLetter = lettersGame.letters[lettersGame.currentRound];
+  const correctUpper = lettersGame.currentLetter.toUpperCase();
+
+  // Display lowercase letter
+  document.getElementById('lettersLowercase').textContent = lettersGame.currentLetter;
+
+  // Generate distractors (3 random uppercase letters that aren't the correct one)
+  const distractors = [];
+  const upperAlphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+  while (distractors.length < 3) {
+    const letter = upperAlphabet[Math.floor(Math.random() * upperAlphabet.length)];
+    if (letter !== correctUpper && !distractors.includes(letter)) {
+      distractors.push(letter);
+    }
+  }
+
+  // Combine correct answer with distractors and shuffle
+  const allChoices = [correctUpper, ...distractors].sort(() => Math.random() - 0.5);
+
+  // Create buttons
+  const container = document.getElementById('lettersUppercaseButtons');
+  container.innerHTML = '';
+  allChoices.forEach(letter => {
+    const btn = document.createElement('button');
+    btn.className = 'letters-uppercase-btn';
+    btn.textContent = letter;
+    btn.addEventListener('click', () => handleLetterMatch(letter, btn, correctUpper));
+    container.appendChild(btn);
+  });
+}
+
+function handleLetterMatch(letter, btn, correctUpper) {
+  if (btn.disabled || btn.classList.contains('correct') || btn.classList.contains('wrong')) return;
+
+  sounds.tap();
+
+  if (letter === correctUpper) {
+    btn.classList.add('correct');
+    sounds.correct();
+    lettersGame.stars++;
+    updateLettersStars();
+    setTimeout(() => {
+      lettersGame.currentRound++;
+      updateLettersProgress();
+      showLettersRound();
+    }, 1000);
+  } else {
+    btn.classList.add('wrong');
+    sounds.wrong();
+    setTimeout(() => {
+      btn.classList.remove('wrong');
     }, 800);
   }
 }
