@@ -12,11 +12,17 @@
     <div class="dino-title-emoji">🦖</div>
     <div class="app-title">DINO LEARN!</div>
     <div class="game-buttons">
-      <button class="game-btn btn-spell" data-game="spell">🔤 Spell It!</button>
-      <button class="game-btn btn-count" data-game="count">🥚 Count!</button>
-      <button class="game-btn btn-match" data-game="match">🃏 Match!</button>
-      <button class="game-btn btn-dice" data-game="dice">🎲 Dice Add!</button>
-      <button class="game-btn btn-letters" data-game="letters">🔤 Letters!</button>
+      <div class="game-buttons-row">
+        <button class="game-btn btn-spell" data-game="spell">🔤 Spell It!</button>
+        <button class="game-btn btn-count" data-game="count">🥚 Count!</button>
+        <button class="game-btn btn-match" data-game="match">🃏 Match!</button>
+        <button class="game-btn btn-dice" data-game="dice">🎲 Dice Add!</button>
+      </div>
+      <div class="game-buttons-row">
+        <button class="game-btn btn-letters" data-game="letters">🔤 Letters!</button>
+        <button class="game-btn btn-stomp" data-game="stomp">🦶 Dino Stomp!</button>
+        <button class="game-btn btn-colors" data-game="colors">🌈 Dino Colors!</button>
+      </div>
     </div>
   </div>
 
@@ -96,6 +102,59 @@
       <div class="letters-lowercase" id="lettersLowercase">a</div>
       <div class="letters-uppercase-buttons" id="lettersUppercaseButtons"></div>
     </div>
+  </div>
+
+  <!-- Dino Stomp Game Screen -->
+  <div class="screen stomp-screen" id="stompScreen">
+    <div class="game-header">
+      <button class="home-btn">🏠</button>
+      <div class="timer-display" id="timerDisplay">⏱️ 60s</div>
+      <div style="display: flex; align-items: center; gap: clamp(8px, 2vw, 12px);">
+        <div class="stomp-counter">🦶 <span id="stompCount">0</span></div>
+        <div class="star-counter">⭐ <span id="stompStars">0</span></div>
+      </div>
+    </div>
+    <div class="stomp-content">
+      <div class="stomp-target-area">
+        <div class="stomp-target-dino">🦖</div>
+        <div class="stomp-target-text">STOMP THE</div>
+        <div class="target-badge" id="targetBadge">D</div>
+        <div class="stomp-target-text">!</div>
+      </div>
+      <div class="stomp-grid" id="stompGrid"></div>
+      <div class="countdown-overlay" id="countdownOverlay"></div>
+    </div>
+  </div>
+
+  <!-- Stomp Results Overlay -->
+  <div class="results-overlay" id="stompResultsOverlay" style="display: none;">
+    <div class="results-dino">🦖</div>
+    <div class="results-title">TIME'S UP!</div>
+    <div class="results-stomp-count">You stomped <span id="resultsCount">0</span> letters!</div>
+    <div class="results-stars" id="resultsStars"></div>
+    <div class="results-rating" id="resultsRating"></div>
+    <div class="results-buttons">
+      <button class="play-again-btn" id="playAgainBtn">PLAY AGAIN 🔄</button>
+      <button class="home-btn-large" id="stompHomeBtn">HOME 🏠</button>
+    </div>
+  </div>
+
+  <!-- Dino Colors Game Screen -->
+  <div class="screen colors-screen" id="colorsScreen">
+    <div class="star-field" id="starField"></div>
+    <div class="game-header">
+      <button class="home-btn">🏠</button>
+      <div class="rainbow-tracker" id="rainbowTracker"></div>
+      <div class="star-counter">⭐ <span id="colorsStars">0</span></div>
+    </div>
+    <div class="colors-content">
+      <div class="colors-word-area">
+        <div class="colors-dino" id="colorsDino">🦖</div>
+        <div class="color-word-display" id="colorWordDisplay">BLUE</div>
+      </div>
+      <div class="splat-row" id="splatRow"></div>
+    </div>
+    <div class="reward-container" id="rewardContainer"></div>
   </div>
 
   <!-- Celebration Overlay -->

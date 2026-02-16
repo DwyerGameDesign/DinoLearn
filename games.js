@@ -789,3 +789,806 @@ function handleLetterMatch(letter, btn, correctUpper) {
     }, 800);
   }
 }
+
+// Dino Stomp Game
+const TARGET_LETTERS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'K', 'L', 'M', 'N', 'O', 'P', 'R', 'S', 'T', 'X'];
+const CONFUSABLE_PAIRS = {
+  'B': ['D', 'P', 'R'],
+  'C': ['G', 'O'],
+  'D': ['B', 'O', 'P'],
+  'E': ['F'],
+  'F': ['E', 'P'],
+  'G': ['C', 'O'],
+  'K': ['X'],
+  'M': ['N'],
+  'N': ['M'],
+  'O': ['C', 'D', 'G'],
+  'P': ['B', 'D', 'F', 'R'],
+  'R': ['B', 'P'],
+  'X': ['K'],
+};
+
+const CARD_COLORS = [
+  { bg: 'linear-gradient(135deg, #f5e6c8, #fdf6e3)', text: '#2c1810' },
+  { bg: 'linear-gradient(135deg, #d4efdf, #eafaf1)', text: '#1a5c2a' },
+  { bg: 'linear-gradient(135deg, #d6eaf8, #ebf5fb)', text: '#1a3a5c' },
+  { bg: 'linear-gradient(135deg, #f9e79f, #fef9e7)', text: '#7d6608' },
+  { bg: 'linear-gradient(135deg, #fadbd8, #fdedec)', text: '#7a1a1a' },
+];
+
+const SPAWN_CONFIG = {
+  easy: { spawnInterval: 1800, cardLifespan: 2800, maxSimultaneous: 3 },
+  medium: { spawnInterval: 1400, cardLifespan: 2400, maxSimultaneous: 4 },
+  hard: { spawnInterval: 1000, cardLifespan: 2000, maxSimultaneous: 5 },
+};
+
+let stompState = {
+  targetLetter: null,
+  distractors: [],
+  timeRemaining: 60,
+  correctHits: 0,
+  wrongHits: 0,
+  totalTargetsSpawned: 0,
+  missedTargets: 0,
+  grid: Array(9).fill(null),
+  spawnTimer: null,
+  gameTimer: null,
+  phase: 'countdown',
+  startTime: null,
+  lastSpawnTime: 0
+};
+
+function startStompGame() {
+  // Reset state
+  stompState.targetLetter = TARGET_LETTERS[Math.floor(Math.random() * TARGET_LETTERS.length)];
+  stompState.distractors = pickDistractors(stompState.targetLetter, 5);
+  stompState.timeRemaining = 60;
+  stompState.correctHits = 0;
+  stompState.wrongHits = 0;
+  stompState.totalTargetsSpawned = 0;
+  stompState.missedTargets = 0;
+  stompState.grid = Array(9).fill(null);
+  stompState.phase = 'countdown';
+  stompState.startTime = null;
+  stompState.lastSpawnTime = 0;
+
+  // Clear timers
+  if (stompState.spawnTimer) clearTimeout(stompState.spawnTimer);
+  if (stompState.gameTimer) clearInterval(stompState.gameTimer);
+
+  // Update UI
+  document.getElementById('targetBadge').textContent = stompState.targetLetter;
+  document.getElementById('stompCount').textContent = '0';
+  document.getElementById('stompStars').textContent = '0';
+  document.getElementById('timerDisplay').textContent = '⏱️ 60s';
+  document.getElementById('timerDisplay').classList.remove('urgent');
+  document.getElementById('stompResultsOverlay').style.display = 'none';
+
+  // Build grid
+  const grid = document.getElementById('stompGrid');
+  grid.innerHTML = '';
+  for (let i = 0; i < 9; i++) {
+    const slot = document.createElement('div');
+    slot.className = 'bush-slot';
+    slot.dataset.index = i;
+    const decoration = document.createElement('div');
+    decoration.className = 'bush-decoration';
+    decoration.textContent = '🌿';
+    slot.appendChild(decoration);
+    grid.appendChild(slot);
+  }
+
+  showScreen('stompScreen');
+  startCountdown();
+}
+
+function pickDistractors(target, count = 5) {
+  const confusable = CONFUSABLE_PAIRS[target] || [];
+  const available = TARGET_LETTERS.filter(l => l !== target && !confusable.includes(l));
+  const shuffled = [...available].sort(() => Math.random() - 0.5);
+  return shuffled.slice(0, count);
+}
+
+function startCountdown() {
+  const overlay = document.getElementById('countdownOverlay');
+  overlay.style.display = 'flex';
+  
+  function showNumber(num) {
+    overlay.innerHTML = '';
+    const div = document.createElement('div');
+    div.className = 'countdown-number';
+    div.textContent = num;
+    overlay.appendChild(div);
+    if (audioCtx) sounds.countdownBeat();
+  }
+
+  function showGo() {
+    overlay.innerHTML = '';
+    const div = document.createElement('div');
+    div.className = 'countdown-go';
+    div.textContent = 'GO! 🦖';
+    overlay.appendChild(div);
+    if (audioCtx) sounds.countdownGo();
+    
+    setTimeout(() => {
+      overlay.style.display = 'none';
+      startGame();
+    }, 600);
+  }
+
+  setTimeout(() => {
+    showNumber(3);
+    setTimeout(() => {
+      showNumber(2);
+      setTimeout(() => {
+        showNumber(1);
+        setTimeout(() => {
+          showGo();
+        }, 800);
+      }, 800);
+    }, 800);
+  }, 500);
+}
+
+function startGame() {
+  stompState.phase = 'playing';
+  stompState.startTime = Date.now();
+  stompState.lastSpawnTime = Date.now();
+
+  // Start timer
+  stompState.gameTimer = setInterval(() => {
+    const elapsed = (Date.now() - stompState.startTime) / 1000;
+    stompState.timeRemaining = Math.max(0, 60 - elapsed);
+    
+    const timerEl = document.getElementById('timerDisplay');
+    const seconds = Math.ceil(stompState.timeRemaining);
+    timerEl.textContent = `⏱️ ${seconds}s`;
+    
+    if (seconds <= 10 && !timerEl.classList.contains('urgent')) {
+      timerEl.classList.add('urgent');
+      if (audioCtx) sounds.timerTick();
+    } else if (seconds <= 10 && Math.floor(stompState.timeRemaining) !== Math.floor((stompState.timeRemaining + 0.1))) {
+      if (audioCtx) sounds.timerTick();
+    }
+
+    if (stompState.timeRemaining <= 0) {
+      endGame();
+    }
+  }, 100);
+
+  // Start spawning
+  spawnNextCard();
+}
+
+function getCurrentPhase() {
+  const elapsed = (Date.now() - stompState.startTime) / 1000;
+  if (elapsed < 20) return SPAWN_CONFIG.easy;
+  if (elapsed < 40) return SPAWN_CONFIG.medium;
+  return SPAWN_CONFIG.hard;
+}
+
+function spawnNextCard() {
+  if (stompState.phase !== 'playing') return;
+
+  const phase = getCurrentPhase();
+  const activeCards = stompState.grid.filter(c => c !== null).length;
+
+  if (activeCards < phase.maxSimultaneous) {
+    const emptySlots = [];
+    for (let i = 0; i < 9; i++) {
+      if (stompState.grid[i] === null) emptySlots.push(i);
+    }
+
+    if (emptySlots.length > 0) {
+      const slotIndex = emptySlots[Math.floor(Math.random() * emptySlots.length)];
+      const isTarget = Math.random() < 0.38;
+      const letter = isTarget ? stompState.targetLetter : 
+                     stompState.distractors[Math.floor(Math.random() * stompState.distractors.length)];
+      
+      if (isTarget) stompState.totalTargetsSpawned++;
+
+      spawnCard(slotIndex, letter, isTarget, phase.cardLifespan);
+    }
+  }
+
+  const nextPhase = getCurrentPhase();
+  stompState.spawnTimer = setTimeout(() => spawnNextCard(), nextPhase.spawnInterval);
+}
+
+function spawnCard(slotIndex, letter, isTarget, lifespan) {
+  const slot = document.querySelector(`.bush-slot[data-index="${slotIndex}"]`);
+  if (!slot || stompState.grid[slotIndex] !== null) return;
+
+  const card = document.createElement('div');
+  card.className = 'letter-card';
+  card.textContent = letter;
+  card.dataset.letter = letter;
+  card.dataset.isTarget = isTarget;
+  
+  const color = CARD_COLORS[Math.floor(Math.random() * CARD_COLORS.length)];
+  card.style.background = color.bg;
+  card.style.color = color.text;
+
+  card.addEventListener('click', () => handleCardTap(card, slotIndex, isTarget));
+  
+  slot.appendChild(card);
+  if (audioCtx) sounds.cardPop();
+
+  const cardObj = {
+    letter,
+    isTarget,
+    element: card,
+    timeoutId: setTimeout(() => {
+      if (stompState.grid[slotIndex] === cardObj) {
+        card.classList.add('sinking');
+        if (audioCtx) sounds.cardSink();
+        if (isTarget) stompState.missedTargets++;
+        setTimeout(() => {
+          if (card.parentNode) card.remove();
+          stompState.grid[slotIndex] = null;
+        }, 300);
+      }
+    }, lifespan),
+    spawnedAt: Date.now()
+  };
+
+  stompState.grid[slotIndex] = cardObj;
+}
+
+function handleCardTap(card, slotIndex, isTarget) {
+  if (stompState.phase !== 'playing' || !stompState.grid[slotIndex]) return;
+
+  const cardObj = stompState.grid[slotIndex];
+  if (cardObj.element !== card) return;
+
+  // Clear the timeout
+  clearTimeout(cardObj.timeoutId);
+
+  if (isTarget) {
+    card.classList.add('stomped');
+    if (audioCtx) sounds.stompCorrect();
+    stompState.correctHits++;
+    document.getElementById('stompCount').textContent = stompState.correctHits;
+    document.getElementById('stompStars').textContent = stompState.correctHits;
+    
+    spawnScoreParticle(card);
+    
+    setTimeout(() => {
+      if (card.parentNode) card.remove();
+      stompState.grid[slotIndex] = null;
+    }, 400);
+  } else {
+    card.classList.add('wrong-stomp');
+    if (audioCtx) sounds.wrong();
+    stompState.wrongHits++;
+    
+    spawnWrongParticle(card);
+    
+    setTimeout(() => {
+      card.classList.remove('wrong-stomp');
+    }, 400);
+  }
+}
+
+function spawnScoreParticle(card) {
+  const particle = document.createElement('div');
+  particle.className = 'score-particle';
+  particle.textContent = '+1 ⭐';
+  const rect = card.getBoundingClientRect();
+  particle.style.left = rect.left + rect.width / 2 + 'px';
+  particle.style.top = rect.top + 'px';
+  document.body.appendChild(particle);
+  setTimeout(() => particle.remove(), 800);
+}
+
+function spawnWrongParticle(card) {
+  const particle = document.createElement('div');
+  particle.className = 'score-particle';
+  particle.textContent = '✗';
+  particle.style.color = '#e74c3c';
+  const rect = card.getBoundingClientRect();
+  particle.style.left = rect.left + rect.width / 2 + 'px';
+  particle.style.top = rect.top + 'px';
+  document.body.appendChild(particle);
+  setTimeout(() => particle.remove(), 600);
+}
+
+function endGame() {
+  stompState.phase = 'ended';
+  clearInterval(stompState.gameTimer);
+  clearTimeout(stompState.spawnTimer);
+
+  // Sink all remaining cards
+  stompState.grid.forEach((cardObj, index) => {
+    if (cardObj) {
+      clearTimeout(cardObj.timeoutId);
+      cardObj.element.classList.add('sinking');
+      if (audioCtx) sounds.cardSink();
+      setTimeout(() => {
+        if (cardObj.element.parentNode) cardObj.element.remove();
+        stompState.grid[index] = null;
+      }, 300);
+    }
+  });
+
+  setTimeout(() => {
+    showResults();
+  }, 500);
+}
+
+function getStarRating(correctHits, totalTargetsSpawned) {
+  if (totalTargetsSpawned === 0) return { stars: 1, text: 'KEEP GOING!' };
+  const hitRate = correctHits / totalTargetsSpawned;
+  if (hitRate >= 0.8) return { stars: 3, text: 'DINO-MITE!' };
+  if (hitRate >= 0.5) return { stars: 2, text: 'GREAT JOB!' };
+  if (hitRate >= 0.2) return { stars: 1, text: 'GOOD TRY!' };
+  return { stars: 1, text: 'KEEP GOING!' };
+}
+
+function showResults() {
+  const rating = getStarRating(stompState.correctHits, stompState.totalTargetsSpawned);
+  
+  document.getElementById('resultsCount').textContent = stompState.correctHits;
+  
+  const starsEl = document.getElementById('resultsStars');
+  starsEl.innerHTML = '';
+  for (let i = 0; i < rating.stars; i++) {
+    const star = document.createElement('span');
+    star.textContent = '⭐';
+    star.style.animation = `titleBounce ${0.3 + i * 0.3}s ease-out`;
+    starsEl.appendChild(star);
+  }
+  
+  document.getElementById('resultsRating').textContent = rating.text;
+  
+  const overlay = document.getElementById('stompResultsOverlay');
+  overlay.style.display = 'flex';
+
+  // Play rating sound
+  if (rating.stars === 3) {
+    if (audioCtx) {
+      sounds.celebration();
+      createConfetti();
+    }
+  } else if (rating.stars === 2) {
+    if (audioCtx) sounds.ratingGreat();
+  } else {
+    if (audioCtx) sounds.ratingEncourage();
+  }
+
+  // Wire up buttons
+  document.getElementById('playAgainBtn').onclick = startStompGame;
+  document.getElementById('stompHomeBtn').onclick = () => {
+    overlay.style.display = 'none';
+    showScreen('homeScreen');
+  };
+}
+
+// Dino Colors Game
+const COLOR_DATA = [
+  {
+    name: 'RED',
+    hex: '#e74c3c',
+    dark: '#c0392b',
+    bgGradient: 'radial-gradient(ellipse at center, #e74c3c 0%, #7a1a1a 100%)',
+    rewardEmoji: ['🍎', '🫀', '❤️', '🌹', '🍓', '🦀', '🚒', '🎈', '🍒', '🐞'],
+  },
+  {
+    name: 'BLUE',
+    hex: '#3498db',
+    dark: '#2171a6',
+    bgGradient: 'radial-gradient(ellipse at center, #3498db 0%, #0d1f3c 100%)',
+    rewardEmoji: ['🦋', '🐳', '💎', '🫐', '🌊', '🧢', '💙', '🐟', '🔵', '🌀'],
+  },
+  {
+    name: 'GREEN',
+    hex: '#2ecc71',
+    dark: '#1ea65a',
+    bgGradient: 'radial-gradient(ellipse at center, #2ecc71 0%, #0d3b1e 100%)',
+    rewardEmoji: ['🐸', '🌿', '🥒', '🐊', '🍀', '🌲', '🥝', '🦎', '💚', '🥦'],
+  },
+  {
+    name: 'YELLOW',
+    hex: '#f1c40f',
+    dark: '#d4ac0d',
+    bgGradient: 'radial-gradient(ellipse at center, #f1c40f 0%, #5a4a05 100%)',
+    rewardEmoji: ['⭐', '🌻', '🍋', '🐝', '🌙', '🧀', '💛', '🌽', '🔔', '🐥'],
+  },
+  {
+    name: 'PURPLE',
+    hex: '#9b59b6',
+    dark: '#7d3c98',
+    bgGradient: 'radial-gradient(ellipse at center, #9b59b6 0%, #2c0d3e 100%)',
+    rewardEmoji: ['🍇', '🔮', '🦄', '👾', '💜', '🍆', '☂️', '🪻', '🎆', '🌂'],
+  },
+  {
+    name: 'ORANGE',
+    hex: '#e67e22',
+    dark: '#cf6d17',
+    bgGradient: 'radial-gradient(ellipse at center, #e67e22 0%, #4a2a0a 100%)',
+    rewardEmoji: ['🍊', '🥕', '🦊', '🏀', '🧡', '🐅', '🍑', '🎃', '🔶', '🥧'],
+  },
+  {
+    name: 'PINK',
+    hex: '#e91e90',
+    dark: '#c2185b',
+    bgGradient: 'radial-gradient(ellipse at center, #e91e90 0%, #3e0a24 100%)',
+    rewardEmoji: ['🌸', '🦩', '💗', '🎀', '🩷', '🌺', '🐷', '💖', '🧁', '👛'],
+  },
+  {
+    name: 'BROWN',
+    hex: '#8B5E3C',
+    dark: '#6d4a2e',
+    bgGradient: 'radial-gradient(ellipse at center, #8B5E3C 0%, #1a1208 100%)',
+    rewardEmoji: ['🐻', '🍫', '🏈', '🌰', '🤎', '🪵', '🍩', '🐿️', '🍂', '🥜'],
+  },
+  {
+    name: 'BLACK',
+    hex: '#2c2c2c',
+    dark: '#1a1a1a',
+    bgGradient: 'radial-gradient(ellipse at center, #3a3a3a 0%, #0a0a0a 100%)',
+    rewardEmoji: ['🖤', '🐈‍⬛', '🕷️', '🎱', '🦇', '🌑', '♠️', '🎩', '⬛', '🏴'],
+  },
+  {
+    name: 'WHITE',
+    hex: '#f5f5f5',
+    dark: '#d5d5d5',
+    bgGradient: 'radial-gradient(ellipse at center, #f0f0f0 0%, #888888 100%)',
+    rewardEmoji: ['☁️', '🤍', '⛄', '🕊️', '🥚', '🦢', '⬜', '🐑', '❄️', '🦷'],
+  },
+];
+
+const COLOR_CONFUSABLES = {
+  'RED': ['ORANGE', 'PINK'],
+  'ORANGE': ['RED', 'YELLOW', 'BROWN'],
+  'YELLOW': ['ORANGE'],
+  'GREEN': [],
+  'BLUE': ['PURPLE'],
+  'PURPLE': ['BLUE', 'PINK'],
+  'PINK': ['RED', 'PURPLE'],
+  'BROWN': ['BLACK', 'ORANGE'],
+  'BLACK': ['BROWN'],
+  'WHITE': ['YELLOW'],
+};
+
+const REWARD_STYLES = ['rain', 'burst', 'float'];
+
+let colorsState = {
+  rounds: [],
+  currentRound: 0,
+  score: 0,
+  wrongAttempts: 0,
+  phase: 'choosing',
+  rewardStyle: 'rain',
+  collectedColors: [],
+  burstOrigin: null, // {x: number, y: number} for burst animation origin
+};
+
+function startColorsGame() {
+  const shuffled = [...COLOR_DATA].sort(() => Math.random() - 0.5);
+  colorsState.rounds = shuffled.slice(0, 8);
+  colorsState.currentRound = 0;
+  colorsState.score = 0;
+  colorsState.collectedColors = [];
+  
+  createStarField();
+  updateRainbowTracker();
+  updateColorsStars();
+  showScreen('colorsScreen');
+  startColorsRound();
+}
+
+function createStarField() {
+  const field = document.getElementById('starField');
+  field.innerHTML = '';
+  for (let i = 0; i < 35; i++) {
+    const star = document.createElement('div');
+    star.className = 'bg-star';
+    star.style.left = Math.random() * 100 + '%';
+    star.style.top = Math.random() * 100 + '%';
+    star.style.animationDuration = (2 + Math.random() * 3) + 's';
+    star.style.animationDelay = Math.random() * 3 + 's';
+    field.appendChild(star);
+  }
+}
+
+function startColorsRound() {
+  if (colorsState.currentRound >= colorsState.rounds.length) {
+    showColorsCelebration();
+    return;
+  }
+  
+  colorsState.wrongAttempts = 0;
+  colorsState.phase = 'choosing';
+  colorsState.burstOrigin = null; // Reset burst origin
+  const currentColor = colorsState.rounds[colorsState.currentRound];
+  
+  const screen = document.getElementById('colorsScreen');
+  screen.style.background = 'radial-gradient(ellipse at top, #1a1a3e 0%, #0d0d1f 100%)';
+  
+  const wordDisplay = document.getElementById('colorWordDisplay');
+  wordDisplay.textContent = currentColor.name;
+  wordDisplay.style.color = 'white';
+  wordDisplay.classList.add('waiting');
+  
+  const dino = document.getElementById('colorsDino');
+  dino.style.animation = 'dinoIdle 2.5s ease-in-out infinite';
+  
+  if (audioCtx) sounds.instructionChime();
+  
+  showSplats(currentColor);
+}
+
+function showSplats(correctColor) {
+  const row = document.getElementById('splatRow');
+  row.innerHTML = '';
+  
+  const colors = pickDistractorColors(correctColor);
+  
+  colors.forEach((color, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'splat-btn';
+    btn.style.background = color.hex;
+    btn.dataset.color = color.name;
+    btn.dataset.isCorrect = color.name === correctColor.name ? 'true' : 'false';
+    btn.style.animationDelay = (i * 0.1) + 's';
+    btn.classList.add('popping-in');
+    
+    // Add visual indicator - small colored circle or keep background colored
+    // The background color shows the color, matching letter button style
+    btn.style.borderColor = 'var(--bark)';
+    
+    btn.addEventListener('click', () => handleSplatClick(btn, correctColor));
+    row.appendChild(btn);
+  });
+}
+
+function pickDistractorColors(correctColor) {
+  const confusable = COLOR_CONFUSABLES[correctColor.name] || [];
+  const available = COLOR_DATA.filter(c =>
+    c.name !== correctColor.name && !confusable.includes(c.name)
+  );
+  const shuffled = available.sort(() => Math.random() - 0.5);
+  const distractors = shuffled.slice(0, 3);
+  const palette = [correctColor, ...distractors];
+  return palette.sort(() => Math.random() - 0.5);
+}
+
+function handleSplatClick(btn, correctColor) {
+  if (btn.classList.contains('correct-splat') || btn.classList.contains('wrong-splat')) return;
+  
+  const isCorrect = btn.dataset.isCorrect === 'true';
+  
+  if (isCorrect) {
+    colorsState.phase = 'reward';
+    btn.classList.add('correct-splat');
+    
+    // Store button position for burst animation
+    const rect = btn.getBoundingClientRect();
+    const container = document.getElementById('rewardContainer');
+    const containerRect = container.getBoundingClientRect();
+    colorsState.burstOrigin = {
+      x: rect.left + rect.width / 2 - containerRect.left,
+      y: rect.top + rect.height / 2 - containerRect.top,
+    };
+    
+    // Add check mark
+    const checkMark = document.createElement('div');
+    checkMark.className = 'splat-check';
+    checkMark.textContent = '✓';
+    btn.appendChild(checkMark);
+    
+    document.querySelectorAll('.splat-btn').forEach(b => {
+      if (b !== btn) {
+        b.classList.add('fading');
+      }
+    });
+    
+    if (audioCtx) sounds.paintSploosh();
+    
+    setTimeout(() => {
+      showReward(correctColor);
+    }, 400);
+  } else {
+    btn.classList.add('wrong-splat');
+    colorsState.wrongAttempts++;
+    
+    if (audioCtx) sounds.wrong();
+    
+    if (colorsState.wrongAttempts >= 3) {
+      const wordDisplay = document.getElementById('colorWordDisplay');
+      wordDisplay.style.color = correctColor.hex;
+      wordDisplay.style.transition = 'color 0.5s';
+    }
+    
+    setTimeout(() => {
+      btn.classList.remove('wrong-splat');
+    }, 400);
+  }
+}
+
+function showReward(color) {
+  const screen = document.getElementById('colorsScreen');
+  screen.style.background = color.bgGradient;
+  
+  const wordDisplay = document.getElementById('colorWordDisplay');
+  wordDisplay.style.color = color.hex;
+  wordDisplay.style.transform = 'scale(1.15)';
+  wordDisplay.classList.remove('waiting');
+  
+  const dino = document.getElementById('colorsDino');
+  dino.style.animation = 'dinoIdle 0.3s ease-in-out infinite';
+  
+  colorsState.rewardStyle = REWARD_STYLES[Math.floor(Math.random() * REWARD_STYLES.length)];
+  
+  // Ensure we have the full color object with rewardEmoji
+  const fullColor = COLOR_DATA.find(c => c.name === color.name) || color;
+  startEmojiReward(fullColor);
+  
+  if (audioCtx) {
+    let pingCount = 0;
+    const pingInterval = setInterval(() => {
+      if (pingCount >= 12) {
+        clearInterval(pingInterval);
+        return;
+      }
+      const freq = 600 + Math.random() * 600;
+      playTone(freq, 0.06, 'sine', 0.04);
+      pingCount++;
+    }, 200);
+  }
+  
+  setTimeout(() => {
+    screen.style.background = 'radial-gradient(ellipse at top, #1a1a3e 0%, #0d0d1f 100%)';
+    wordDisplay.style.color = 'white';
+    wordDisplay.style.transform = 'scale(1)';
+    
+    colorsState.collectedColors.push(color);
+    updateRainbowTracker();
+    
+    if (audioCtx) {
+      const roundNum = colorsState.currentRound;
+      const freq = 600 + roundNum * 80;
+      playTone(freq, 0.1, 'triangle', 0.1);
+    }
+    
+    colorsState.score++;
+    updateColorsStars();
+    colorsState.currentRound++;
+    
+    setTimeout(() => {
+      startColorsRound();
+    }, 600);
+  }, 3200);
+}
+
+function startEmojiReward(color) {
+  const container = document.getElementById('rewardContainer');
+  if (!container) {
+    console.error('rewardContainer not found');
+    return;
+  }
+  container.innerHTML = '';
+  
+  const emojis = color.rewardEmoji;
+  if (!emojis || !Array.isArray(emojis) || emojis.length === 0) {
+    console.error('No emojis found for color:', color.name, color);
+    return;
+  }
+  
+  let spawned = 0;
+  const total = 18;
+  
+  const spawnInterval = setInterval(() => {
+    if (spawned >= total) {
+      clearInterval(spawnInterval);
+      return;
+    }
+    
+    const emoji = document.createElement('div');
+    emoji.className = 'reward-emoji';
+    emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+    
+    // Set CSS variables first, before adding classes
+    if (colorsState.rewardStyle === 'rain') {
+      emoji.style.left = (10 + Math.random() * 80) + '%';
+      const duration = 2 + Math.random() * 1.5;
+      const delay = Math.random() * 0.3;
+      const wobble = (Math.random() - 0.5) * 60;
+      const spin = Math.random() * 360;
+      emoji.style.setProperty('--wobble', wobble + 'px');
+      emoji.style.setProperty('--spin', spin + 'deg');
+      emoji.style.animationDuration = duration + 's';
+      emoji.style.animationDelay = delay + 's';
+    } else if (colorsState.rewardStyle === 'burst') {
+      const angle = (Math.PI * 2 * spawned) / total;
+      const distance = 150 + Math.random() * 100;
+      emoji.style.setProperty('--dx', Math.cos(angle) * distance + 'px');
+      emoji.style.setProperty('--dy', Math.sin(angle) * distance + 'px');
+      emoji.style.setProperty('--spin', (Math.random() * 720 - 360) + 'deg');
+      emoji.style.animationDuration = '2s';
+      emoji.style.animationDelay = '0s';
+      
+      // Set burst origin from clicked button position
+      if (colorsState.burstOrigin) {
+        emoji.style.left = colorsState.burstOrigin.x + 'px';
+        emoji.style.top = colorsState.burstOrigin.y + 'px';
+      } else {
+        // Fallback to center if no origin set
+        emoji.style.left = '50%';
+        emoji.style.top = '50%';
+      }
+    } else if (colorsState.rewardStyle === 'float') {
+      emoji.style.left = (10 + Math.random() * 80) + '%';
+      const wobble = (Math.random() - 0.5) * 40;
+      const spin = Math.random() * 360;
+      emoji.style.setProperty('--wobble', wobble + 'px');
+      emoji.style.setProperty('--spin', spin + 'deg');
+      emoji.style.animationDuration = '2.5s';
+      emoji.style.animationDelay = '0s';
+    }
+    
+    // Add style class after setting properties
+    emoji.classList.add(colorsState.rewardStyle + '-style');
+    
+    container.appendChild(emoji);
+    spawned++;
+    
+    // Increase timeout to match animation duration
+    setTimeout(() => emoji.remove(), 5000);
+  }, 130);
+  
+  setTimeout(() => {
+    clearInterval(spawnInterval);
+    container.innerHTML = '';
+  }, 4000);
+}
+
+function updateRainbowTracker() {
+  const tracker = document.getElementById('rainbowTracker');
+  tracker.innerHTML = '';
+  
+  for (let i = 0; i < 8; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'rainbow-dot';
+    if (i < colorsState.collectedColors.length) {
+      const color = colorsState.collectedColors[i];
+      dot.style.background = color.hex;
+      dot.style.color = color.hex;
+      dot.classList.add('collected');
+    }
+    tracker.appendChild(dot);
+  }
+  
+  if (colorsState.collectedColors.length === 8) {
+    tracker.classList.add('complete');
+    if (audioCtx) {
+      const scale = [523, 587, 659, 698, 784, 880, 988, 1047];
+      scale.forEach((freq, i) => {
+        setTimeout(() => playTone(freq, 0.12, 'triangle', 0.12), i * 100);
+      });
+      setTimeout(() => {
+        playTone(523, 0.5, 'triangle', 0.12);
+        playTone(659, 0.5, 'triangle', 0.12);
+        playTone(784, 0.5, 'triangle', 0.12);
+      }, 800);
+    }
+    setTimeout(() => {
+      tracker.classList.remove('complete');
+    }, 2000);
+  }
+}
+
+function updateColorsStars() {
+  document.getElementById('colorsStars').textContent = colorsState.score;
+}
+
+function showColorsCelebration() {
+  sounds.celebration();
+  createConfetti();
+  showCelebration('RAINBOW MASTER! 🌈', () => {
+    showScreen('homeScreen');
+  });
+}
+
+// Old paint game code removed

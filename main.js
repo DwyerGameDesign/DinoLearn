@@ -18,6 +18,8 @@ document.querySelectorAll('.game-btn').forEach(btn => {
     else if (game === 'match') startMatchGame();
     else if (game === 'dice') startDiceGame();
     else if (game === 'letters') startLettersGame();
+    else if (game === 'stomp') startStompGame();
+    else if (game === 'colors') startColorsGame();
   });
 });
 
