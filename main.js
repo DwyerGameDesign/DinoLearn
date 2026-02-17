@@ -6,7 +6,16 @@ function showScreen(screenId) {
 
 // Home button handlers
 document.querySelectorAll('.home-btn').forEach(btn => {
-  btn.addEventListener('click', () => showScreen('homeScreen'));
+  btn.addEventListener('click', () => {
+    // Clean up any active games before going home
+    const activeScreen = document.querySelector('.screen.active');
+    if (activeScreen && activeScreen.id === 'stompScreen') {
+      if (typeof cleanupStompGame === 'function') {
+        cleanupStompGame();
+      }
+    }
+    showScreen('homeScreen');
+  });
 });
 
 // Game button handlers

@@ -1093,6 +1093,32 @@ function spawnWrongParticle(card) {
   setTimeout(() => particle.remove(), 600);
 }
 
+function cleanupStompGame() {
+  // Stop all timers
+  if (stompState.gameTimer) {
+    clearInterval(stompState.gameTimer);
+    stompState.gameTimer = null;
+  }
+  if (stompState.spawnTimer) {
+    clearTimeout(stompState.spawnTimer);
+    stompState.spawnTimer = null;
+  }
+  
+  // Clear all card timeouts
+  stompState.grid.forEach((cardObj, index) => {
+    if (cardObj) {
+      clearTimeout(cardObj.timeoutId);
+      if (cardObj.element && cardObj.element.parentNode) {
+        cardObj.element.remove();
+      }
+      stompState.grid[index] = null;
+    }
+  });
+  
+  // Set phase to stopped
+  stompState.phase = 'stopped';
+}
+
 function endGame() {
   stompState.phase = 'ended';
   clearInterval(stompState.gameTimer);
@@ -1160,6 +1186,7 @@ function showResults() {
   document.getElementById('playAgainBtn').onclick = startStompGame;
   document.getElementById('stompHomeBtn').onclick = () => {
     overlay.style.display = 'none';
+    cleanupStompGame();
     showScreen('homeScreen');
   };
 }

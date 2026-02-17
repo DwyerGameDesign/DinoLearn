@@ -49,6 +49,11 @@ body {
   overflow: hidden;
 }
 
+.screen.allow-scroll {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
 .screen.active {
   display: flex;
 }
@@ -57,14 +62,16 @@ body {
 .home-screen {
   align-items: center;
   justify-content: flex-start;
-  padding-top: clamp(20px, 5vw, 40px);
-  gap: clamp(16px, 4vw, 28px);
+  padding-top: clamp(4px, 1vw, 8px);
+  padding-bottom: clamp(4px, 1vw, 8px);
+  gap: clamp(6px, 1.5vw, 10px);
 }
 
 .dino-title-emoji {
-  font-size: clamp(60px, 15vw, 120px);
+  font-size: clamp(50px, 12vw, 100px);
   filter: drop-shadow(4px 4px 0 rgba(0,0,0,0.3));
   animation: dinoIdle 2.5s ease-in-out infinite;
+  margin-top: clamp(-10px, -2.5vw, -5px);
 }
 
 @keyframes dinoIdle {
@@ -74,10 +81,11 @@ body {
 
 .app-title {
   font-family: 'Lilita One', sans-serif;
-  font-size: clamp(36px, 9vw, 64px);
+  font-size: clamp(30px, 7.5vw, 54px);
   color: var(--lava-orange);
   text-shadow: 4px 4px 0 var(--bark), 2px 2px 0 rgba(0,0,0,0.4);
   animation: titleBounce 2s ease-in-out infinite;
+  margin-top: clamp(-8px, -2vw, -4px);
 }
 
 @keyframes titleBounce {
@@ -88,7 +96,7 @@ body {
 .game-buttons {
   display: flex;
   flex-direction: column;
-  gap: clamp(12px, 3vw, 16px);
+  gap: clamp(6px, 1.5vw, 10px);
   align-items: center;
   width: 100%;
   padding: 0 clamp(12px, 3vw, 20px);
@@ -962,10 +970,12 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  gap: clamp(12px, 3vw, 20px);
-  padding: clamp(8px, 2vw, 16px) clamp(12px, 3vw, 24px);
-  padding-top: clamp(4px, 1vw, 8px);
+  gap: clamp(4px, 1vw, 8px);
+  padding: clamp(2px, 0.5vw, 4px) clamp(12px, 3vw, 24px);
+  padding-top: clamp(0px, 0vw, 2px);
+  padding-bottom: clamp(4px, 1vw, 8px);
   position: relative;
+  min-height: 0;
 }
 
 .timer-display {
@@ -1007,11 +1017,11 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: clamp(8px, 2vw, 12px);
+  gap: clamp(6px, 1.5vw, 10px);
   background: rgba(0,0,0,0.3);
-  padding: clamp(8px, 2vw, 12px) clamp(16px, 4vw, 24px);
-  border-radius: clamp(16px, 4vw, 24px);
-  margin-bottom: clamp(4px, 1vw, 8px);
+  padding: clamp(6px, 1.5vw, 10px) clamp(12px, 3vw, 18px);
+  border-radius: clamp(12px, 3vw, 20px);
+  margin-bottom: clamp(2px, 0.5vw, 4px);
 }
 
 .stomp-target-dino {
@@ -1052,11 +1062,12 @@ body {
 .stomp-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: clamp(10px, 2.5vw, 18px);
-  max-width: clamp(300px, 75vw, 460px);
+  gap: clamp(6px, 1.5vw, 10px);
+  max-width: clamp(260px, 65vw, 380px);
   width: 100%;
   aspect-ratio: 1;
-  padding: 0 clamp(12px, 3vw, 16px);
+  padding: 0 clamp(8px, 2vw, 12px);
+  margin-bottom: clamp(4px, 1vw, 8px);
 }
 
 .bush-slot {
@@ -1589,5 +1600,76 @@ body {
   }
   .game-btn {
     width: clamp(200px, 50vw, 280px);
+  }
+}
+
+@media (orientation: landscape) and (max-height: 600px) {
+  /* Optimize for landscape tablets like Fire tablets */
+  .home-screen {
+    padding-top: clamp(2px, 0.5vw, 4px);
+    padding-bottom: clamp(2px, 0.5vw, 4px);
+    gap: clamp(3px, 0.75vw, 6px);
+    justify-content: flex-start;
+  }
+  
+  .dino-title-emoji {
+    font-size: clamp(28px, 7vw, 50px);
+    margin-top: clamp(-12px, -3vw, -6px);
+  }
+  
+  .app-title {
+    font-size: clamp(20px, 5vw, 32px);
+    margin-top: clamp(-10px, -2.5vw, -5px);
+  }
+  
+  .game-buttons {
+    gap: clamp(3px, 0.75vw, 5px);
+    margin-top: clamp(-4px, -1vw, -2px);
+  }
+  
+  .game-buttons-row {
+    gap: clamp(5px, 1.25vw, 8px);
+  }
+  
+  .game-btn {
+    min-width: clamp(110px, 28vw, 160px);
+    font-size: clamp(13px, 3.2vw, 18px);
+    padding: clamp(8px, 2vw, 12px) clamp(14px, 3.5vw, 18px);
+  }
+  
+  .stomp-content {
+    gap: clamp(2px, 0.5vw, 4px);
+    padding-top: clamp(0px, 0vw, 1px);
+    padding-bottom: clamp(2px, 0.5vw, 4px);
+    justify-content: flex-start;
+  }
+  
+  .stomp-grid {
+    max-width: clamp(220px, 55vw, 320px);
+    gap: clamp(4px, 1vw, 8px);
+    margin-bottom: clamp(2px, 0.5vw, 4px);
+    margin-top: clamp(-4px, -1vw, -2px);
+  }
+  
+  .timer-display,
+  .stomp-counter {
+    font-size: clamp(14px, 3.5vw, 18px);
+    padding: clamp(3px, 0.75vw, 5px) clamp(10px, 2.5vw, 14px);
+  }
+  
+  .stomp-target-area {
+    padding: clamp(4px, 1vw, 6px) clamp(10px, 2.5vw, 14px);
+    margin-bottom: clamp(1px, 0.25vw, 2px);
+    margin-top: clamp(-4px, -1vw, -2px);
+  }
+  
+  .stomp-target-text {
+    font-size: clamp(16px, 4vw, 22px);
+  }
+  
+  .target-badge {
+    width: clamp(36px, 9vw, 48px);
+    height: clamp(36px, 9vw, 48px);
+    font-size: clamp(20px, 5vw, 32px);
   }
 }
