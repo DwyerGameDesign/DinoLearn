@@ -12,10 +12,13 @@
     <div class="dino-title-emoji">🦖</div>
     <div class="app-title">DINO LEARN!</div>
     <div class="game-buttons">
+      <div class="game-buttons-row lotd-row">
+        <button class="game-btn btn-lotd" data-game="lotd">⭐ Letter of the Day!</button>
+      </div>
       <div class="game-buttons-row">
         <button class="game-btn btn-spell" data-game="spell">🔤 Spell It!</button>
         <button class="game-btn btn-count" data-game="count">🥚 Count!</button>
-        <button class="game-btn btn-match" data-game="match">🃏 Match!</button>
+        <button class="game-btn btn-match" data-game="match">🏠 Match!</button>
         <button class="game-btn btn-dice" data-game="dice">🎲 Dice Add!</button>
       </div>
       <div class="game-buttons-row">
@@ -24,6 +27,16 @@
         <button class="game-btn btn-colors" data-game="colors">🌈 Dino Colors!</button>
       </div>
     </div>
+  </div>
+
+  <!-- Letter of the Day Screen -->
+  <div class="screen lotd-screen" id="lotdScreen">
+    <div class="game-header">
+      <button class="home-btn">🏠</button>
+      <div class="progress-dots" id="lotdProgress"></div>
+      <div class="lotd-header-letter" id="lotdHeaderLetter">A</div>
+    </div>
+    <div class="lotd-content" id="lotdContent"></div>
   </div>
 
   <!-- Spelling Game Screen -->
@@ -134,7 +147,7 @@
     <div class="results-stars" id="resultsStars"></div>
     <div class="results-rating" id="resultsRating"></div>
     <div class="results-buttons">
-      <button class="play-again-btn" id="playAgainBtn">PLAY AGAIN 🔄</button>
+      <button class="play-again-btn" id="playAgainBtn">PLAY AGAIN 🎮</button>
       <button class="home-btn-large" id="stompHomeBtn">HOME 🏠</button>
     </div>
   </div>
@@ -166,6 +179,7 @@
 
   <script src="audio.js"></script>
   <script src="games.js"></script>
+  <script src="lotd.js"></script>
   <script src="main.js"></script>
 </body>
 </html>

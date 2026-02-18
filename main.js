@@ -14,6 +14,11 @@ document.querySelectorAll('.home-btn').forEach(btn => {
         cleanupStompGame();
       }
     }
+    if (activeScreen && activeScreen.id === 'lotdScreen') {
+      if (typeof cleanupFindIt === 'function') {
+        cleanupFindIt();
+      }
+    }
     showScreen('homeScreen');
   });
 });
@@ -29,6 +34,7 @@ document.querySelectorAll('.game-btn').forEach(btn => {
     else if (game === 'letters') startLettersGame();
     else if (game === 'stomp') startStompGame();
     else if (game === 'colors') startColorsGame();
+    else if (game === 'lotd') startLOTD();
   });
 });
 
@@ -62,3 +68,16 @@ document.getElementById('nextBtn').addEventListener('click', () => {
   document.getElementById('celebrationOverlay').classList.remove('active');
   showScreen('homeScreen');
 });
+
+// Show today's letter on the LOTD button
+(function() {
+  const start = new Date('2025-01-01');
+  const today = new Date();
+  const diffDays = Math.floor((today - start) / (1000 * 60 * 60 * 24));
+  const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const todayLetter = letters[diffDays % 26];
+  const lotdBtn = document.querySelector('[data-game="lotd"]');
+  if (lotdBtn) lotdBtn.textContent = '⭐ Letter ' + todayLetter + ' of the Day!';
+  const headerEl = document.getElementById('lotdHeaderLetter');
+  if (headerEl) headerEl.textContent = todayLetter;
+})();

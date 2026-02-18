@@ -835,7 +835,8 @@ let stompState = {
   gameTimer: null,
   phase: 'countdown',
   startTime: null,
-  lastSpawnTime: 0
+  lastSpawnTime: 0,
+  countdownTimeouts: []
 };
 
 function startStompGame() {
@@ -851,6 +852,7 @@ function startStompGame() {
   stompState.phase = 'countdown';
   stompState.startTime = null;
   stompState.lastSpawnTime = 0;
+  stompState.countdownTimeouts = [];
 
   // Clear timers
   if (stompState.spawnTimer) clearTimeout(stompState.spawnTimer);
@@ -893,7 +895,11 @@ function startCountdown() {
   const overlay = document.getElementById('countdownOverlay');
   overlay.style.display = 'flex';
   
+  // Store timeout IDs so we can clear them if needed
+  stompState.countdownTimeouts = [];
+  
   function showNumber(num) {
+    if (stompState.phase !== 'countdown') return; // Stop if phase changed
     overlay.innerHTML = '';
     const div = document.createElement('div');
     div.className = 'countdown-number';
@@ -903,6 +909,7 @@ function startCountdown() {
   }
 
   function showGo() {
+    if (stompState.phase !== 'countdown') return; // Stop if phase changed
     overlay.innerHTML = '';
     const div = document.createElement('div');
     div.className = 'countdown-go';
@@ -910,24 +917,39 @@ function startCountdown() {
     overlay.appendChild(div);
     if (audioCtx) sounds.countdownGo();
     
-    setTimeout(() => {
-      overlay.style.display = 'none';
-      startGame();
+    const timeoutId = setTimeout(() => {
+      if (stompState.phase === 'countdown') {
+        overlay.style.display = 'none';
+        startGame();
+      }
     }, 600);
+    stompState.countdownTimeouts.push(timeoutId);
   }
 
-  setTimeout(() => {
-    showNumber(3);
-    setTimeout(() => {
-      showNumber(2);
-      setTimeout(() => {
-        showNumber(1);
-        setTimeout(() => {
-          showGo();
-        }, 800);
+  const timeout1 = setTimeout(() => {
+    if (stompState.phase === 'countdown') {
+      showNumber(3);
+      const timeout2 = setTimeout(() => {
+        if (stompState.phase === 'countdown') {
+          showNumber(2);
+          const timeout3 = setTimeout(() => {
+            if (stompState.phase === 'countdown') {
+              showNumber(1);
+              const timeout4 = setTimeout(() => {
+                if (stompState.phase === 'countdown') {
+                  showGo();
+                }
+              }, 800);
+              stompState.countdownTimeouts.push(timeout4);
+            }
+          }, 800);
+          stompState.countdownTimeouts.push(timeout3);
+        }
       }, 800);
-    }, 800);
+      stompState.countdownTimeouts.push(timeout2);
+    }
   }, 500);
+  stompState.countdownTimeouts.push(timeout1);
 }
 
 function startGame() {
@@ -1094,6 +1116,9 @@ function spawnWrongParticle(card) {
 }
 
 function cleanupStompGame() {
+  // Set phase to stopped first to prevent any new game logic from running
+  stompState.phase = 'stopped';
+  
   // Stop all timers
   if (stompState.gameTimer) {
     clearInterval(stompState.gameTimer);
@@ -1102,6 +1127,21 @@ function cleanupStompGame() {
   if (stompState.spawnTimer) {
     clearTimeout(stompState.spawnTimer);
     stompState.spawnTimer = null;
+  }
+  
+  // Clear all countdown timeouts
+  if (stompState.countdownTimeouts) {
+    stompState.countdownTimeouts.forEach(timeoutId => {
+      clearTimeout(timeoutId);
+    });
+    stompState.countdownTimeouts = [];
+  }
+  
+  // Hide countdown overlay
+  const countdownOverlay = document.getElementById('countdownOverlay');
+  if (countdownOverlay) {
+    countdownOverlay.style.display = 'none';
+    countdownOverlay.textContent = '';
   }
   
   // Clear all card timeouts
@@ -1115,8 +1155,11 @@ function cleanupStompGame() {
     }
   });
   
-  // Set phase to stopped
-  stompState.phase = 'stopped';
+  // Hide results overlay if visible
+  const resultsOverlay = document.getElementById('stompResultsOverlay');
+  if (resultsOverlay) {
+    resultsOverlay.style.display = 'none';
+  }
 }
 
 function endGame() {
