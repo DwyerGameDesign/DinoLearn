@@ -68,16 +68,3 @@ document.getElementById('nextBtn').addEventListener('click', () => {
   document.getElementById('celebrationOverlay').classList.remove('active');
   showScreen('homeScreen');
 });
-
-// Show today's letter on the LOTD button
-(function() {
-  const start = new Date('2025-01-01');
-  const today = new Date();
-  const diffDays = Math.floor((today - start) / (1000 * 60 * 60 * 24));
-  const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  const todayLetter = letters[diffDays % 26];
-  const lotdBtn = document.querySelector('[data-game="lotd"]');
-  if (lotdBtn) lotdBtn.textContent = '⭐ Letter ' + todayLetter + ' of the Day!';
-  const headerEl = document.getElementById('lotdHeaderLetter');
-  if (headerEl) headerEl.textContent = todayLetter;
-})();

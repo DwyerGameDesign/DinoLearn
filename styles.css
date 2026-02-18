@@ -1681,6 +1681,481 @@ body {
     height: clamp(36px, 9vw, 48px);
     font-size: clamp(20px, 5vw, 32px);
   }
+
+  /* ========== Shared Game Header ========== */
+  .game-header {
+    min-height: clamp(36px, 7vh, 48px);
+    padding: clamp(4px, 1vh, 8px);
+    gap: clamp(4px, 1vh, 8px);
+  }
+  .home-btn {
+    width: clamp(36px, 7vh, 48px);
+    height: clamp(36px, 7vh, 48px);
+    font-size: clamp(18px, 3.5vh, 24px);
+    border-width: 3px;
+  }
+  .star-counter {
+    font-size: clamp(14px, 2.5vh, 18px);
+    min-width: auto;
+    gap: clamp(2px, 0.5vh, 4px);
+  }
+  .progress-dot {
+    width: clamp(8px, 1.5vh, 12px);
+    height: clamp(8px, 1.5vh, 12px);
+  }
+  .progress-dots {
+    gap: clamp(3px, 0.75vh, 6px);
+  }
+  .toggle-btn {
+    width: clamp(36px, 7vh, 48px);
+    height: clamp(36px, 7vh, 48px);
+    font-size: clamp(16px, 3vh, 22px);
+    border-width: 3px;
+  }
+
+  /* ========== Counting Game ========== */
+  .count-content {
+    gap: clamp(4px, 1vh, 8px);
+    padding: clamp(4px, 1vh, 8px) clamp(8px, 2vw, 16px);
+    padding-top: clamp(2px, 0.5vh, 4px);
+  }
+  .count-prompt {
+    font-size: clamp(18px, 3.5vh, 26px);
+    margin-bottom: clamp(-4px, -0.5vh, -2px);
+  }
+  .egg-field {
+    gap: clamp(4px, 0.8vh, 8px);
+    padding: clamp(4px, 0.8vh, 8px);
+    max-width: clamp(400px, 70vw, 600px);
+  }
+  .egg-item {
+    font-size: clamp(32px, 6vh, 48px);
+  }
+  .egg-count-label {
+    font-size: clamp(14px, 2.5vh, 20px);
+    top: -16px;
+    padding: clamp(2px, 0.4vh, 4px) clamp(4px, 1vw, 8px);
+  }
+  .number-buttons {
+    gap: clamp(6px, 1.2vh, 10px);
+  }
+  .number-btn {
+    width: clamp(52px, 10vh, 68px);
+    height: clamp(52px, 10vh, 68px);
+    font-size: clamp(28px, 5vh, 40px);
+    border-width: 4px;
+  }
+
+  /* ========== Memory Match Game ========== */
+  .match-content {
+    gap: clamp(6px, 1.2vh, 12px);
+    padding: clamp(4px, 1vh, 8px);
+  }
+  .card-grid {
+    gap: clamp(6px, 1.2vh, 10px);
+    max-width: 480px;
+  }
+  .card {
+    min-height: unset;
+    height: clamp(72px, 17vh, 110px);
+    font-size: clamp(32px, 7vh, 52px);
+    border-width: 4px;
+  }
+
+  /* ========== Dice Add Game ========== */
+  .dice-dino {
+    display: none;
+  }
+  .dice-content {
+    gap: clamp(4px, 1vh, 8px);
+    padding: clamp(4px, 1vh, 8px) clamp(8px, 2vw, 16px);
+    padding-top: clamp(2px, 0.5vh, 4px);
+  }
+  .dice-container {
+    gap: clamp(8px, 2vw, 14px);
+  }
+  .die {
+    width: clamp(64px, 12vh, 90px);
+    height: clamp(64px, 12vh, 90px);
+    font-size: clamp(44px, 8vh, 64px);
+    border-width: 4px;
+    border-radius: clamp(10px, 2vh, 16px);
+  }
+  .dice-plus {
+    font-size: clamp(22px, 4vh, 32px);
+    margin: 0 clamp(2px, 0.5vw, 6px);
+  }
+  .dice-equation .equation-number {
+    font-size: clamp(28px, 5.5vh, 42px);
+  }
+  .dice-equation .equation-symbol {
+    font-size: clamp(22px, 4vh, 34px);
+  }
+  .dice-equation .equation-question {
+    font-size: clamp(28px, 5.5vh, 42px);
+  }
+  .dice-equation .equation-answer {
+    font-size: clamp(28px, 5.5vh, 42px);
+  }
+  .roll-btn {
+    min-height: clamp(48px, 8vh, 64px);
+    min-width: clamp(160px, 30vw, 220px);
+    font-size: clamp(24px, 4vh, 32px);
+    padding: clamp(8px, 1.5vh, 14px) clamp(24px, 5vw, 40px);
+    border-width: 5px;
+  }
+  .dice-answer-buttons {
+    gap: clamp(6px, 1.2vh, 10px);
+  }
+  .dice-answer-btn {
+    width: clamp(52px, 10vh, 68px);
+    height: clamp(52px, 10vh, 68px);
+    font-size: clamp(28px, 5vh, 40px);
+    border-width: 4px;
+  }
+
+  /* ========== Letter Match Game ========== */
+  .letters-content {
+    gap: clamp(6px, 1.2vh, 12px);
+    padding: clamp(4px, 1vh, 8px) clamp(8px, 2vw, 16px);
+    padding-top: clamp(2px, 0.5vh, 4px);
+  }
+  .letters-prompt {
+    font-size: clamp(20px, 4vh, 30px);
+    margin-bottom: clamp(-4px, -0.5vh, -2px);
+  }
+  .letters-lowercase {
+    font-size: clamp(64px, 16vh, 100px);
+    margin-bottom: clamp(2px, 0.5vh, 6px);
+  }
+  .letters-uppercase-buttons {
+    gap: clamp(6px, 1.2vh, 12px);
+  }
+  .letters-uppercase-btn {
+    width: clamp(56px, 11vh, 76px);
+    height: clamp(56px, 11vh, 76px);
+    font-size: clamp(32px, 6vh, 48px);
+    border-width: 4px;
+  }
+
+  /* ========== Dino Stomp Game (complete) ========== */
+  .stomp-target-dino {
+    display: none;
+  }
+  .stomp-grid {
+    aspect-ratio: unset;
+    height: clamp(200px, 55vh, 340px);
+  }
+  .bush-slot {
+    aspect-ratio: unset;
+  }
+  .letter-card {
+    font-size: clamp(24px, 6vw, 40px);
+  }
+  .stomp-target-area {
+    gap: clamp(4px, 1vw, 6px);
+  }
+
+  /* ========== Dino Colors Game ========== */
+  .colors-dino {
+    display: none;
+  }
+  .colors-content {
+    gap: clamp(8px, 1.5vh, 14px);
+    padding: clamp(4px, 1vh, 8px) clamp(8px, 2vw, 16px);
+    padding-top: clamp(4px, 1vh, 8px);
+  }
+  .colors-word-area {
+    margin-top: clamp(4px, 1vh, 8px);
+    gap: clamp(6px, 1.5vw, 12px);
+  }
+  .color-word-display {
+    font-size: clamp(40px, 10vh, 64px);
+    padding: clamp(6px, 1.2vh, 10px) clamp(16px, 4vw, 24px);
+  }
+  .splat-row {
+    gap: clamp(8px, 1.5vh, 14px);
+    padding: 0 clamp(8px, 2vw, 14px);
+  }
+  .splat-btn {
+    width: clamp(56px, 11vh, 76px);
+    height: clamp(56px, 11vh, 76px);
+    border-width: 4px;
+  }
+  .splat-check {
+    font-size: clamp(32px, 7vh, 48px);
+  }
+  .rainbow-tracker {
+    padding: 4px 8px;
+    gap: 3px;
+  }
+  .rainbow-dot {
+    width: 14px;
+    height: 14px;
+  }
+
+  /* ========== Letter of the Day — Shared ========== */
+  .lotd-content {
+    padding: clamp(4px, 1vh, 8px) clamp(8px, 2vw, 16px);
+    padding-top: 0;
+  }
+  .lotd-next-btn {
+    padding: clamp(10px, 2vh, 16px) clamp(24px, 6vw, 40px);
+    font-size: clamp(18px, 3.5vh, 26px);
+    margin-top: clamp(2px, 0.5vh, 4px);
+  }
+  .lotd-activity-title {
+    font-size: clamp(16px, 3vh, 24px);
+  }
+  .lotd-header-letter {
+    font-size: clamp(20px, 4vh, 32px);
+    min-width: clamp(36px, 7vh, 48px);
+  }
+
+  /* ---- LOTD Intro ---- */
+  .lotd-intro-wrap {
+    gap: clamp(4px, 1vh, 10px);
+    padding-top: clamp(4px, 1vh, 8px);
+  }
+  .lotd-intro-subtitle {
+    font-size: clamp(14px, 2.5vh, 20px);
+  }
+  .lotd-big-letter {
+    font-size: clamp(72px, 16vh, 110px);
+  }
+  .lotd-intro-lower {
+    font-size: clamp(44px, 10vh, 64px);
+    margin-top: clamp(-12px, -2.5vh, -6px);
+  }
+  .lotd-intro-sound {
+    font-size: clamp(14px, 2.5vh, 20px);
+  }
+  .lotd-ex-chip {
+    padding: clamp(4px, 0.8vh, 6px) clamp(8px, 2vw, 12px);
+    font-size: clamp(12px, 2.2vh, 16px);
+  }
+
+  /* ---- LOTD Words ---- */
+  .lotd-words-wrap {
+    gap: clamp(6px, 1.2vh, 12px);
+    padding-top: clamp(2px, 0.5vh, 4px);
+  }
+  .lotd-word-emoji {
+    font-size: clamp(28px, 6vh, 42px);
+  }
+  .lotd-word-label {
+    font-size: clamp(11px, 2vh, 15px);
+  }
+  .lotd-word-card {
+    padding: clamp(4px, 1vh, 8px) clamp(4px, 1vw, 8px);
+    gap: 2px;
+  }
+
+  /* ---- LOTD Cases ---- */
+  .lotd-cases-wrap {
+    gap: clamp(6px, 1.2vh, 10px);
+    padding-top: clamp(2px, 0.5vh, 4px);
+  }
+  .lotd-cases-display {
+    padding: clamp(8px, 1.5vh, 14px) clamp(16px, 4vw, 28px);
+    gap: clamp(10px, 2.5vw, 20px);
+    margin-bottom: clamp(2px, 0.5vh, 4px);
+  }
+  .lotd-case-letter {
+    font-size: clamp(48px, 11vh, 72px);
+  }
+  .lotd-case-label {
+    font-size: clamp(11px, 2vh, 15px);
+  }
+  .lotd-case-equals {
+    font-size: clamp(20px, 4vh, 32px);
+  }
+  .lotd-cases-quiz {
+    gap: clamp(6px, 1.2vh, 10px);
+  }
+  .lotd-case-btn {
+    width: clamp(52px, 10vh, 72px);
+    height: clamp(52px, 10vh, 72px);
+    font-size: clamp(28px, 5.5vh, 42px);
+    border-width: 4px;
+  }
+  .lotd-cases-score {
+    font-size: clamp(14px, 2.5vh, 20px);
+  }
+
+  /* ---- LOTD Tracing ---- */
+  .lotd-trace-wrap {
+    gap: clamp(4px, 1vh, 8px);
+    padding-top: clamp(2px, 0.5vh, 4px);
+  }
+  .lotd-trace-tabs {
+    gap: clamp(4px, 1vw, 8px);
+  }
+  .lotd-trace-tab {
+    padding: clamp(4px, 1vh, 8px) clamp(12px, 3vw, 20px);
+    font-size: clamp(12px, 2.2vh, 17px);
+  }
+  .lotd-trace-container {
+    width: min(200px, 36vh);
+    height: min(200px, 36vh);
+  }
+  .lotd-trace-progress-bar {
+    height: 10px;
+  }
+  .lotd-trace-hint {
+    font-size: clamp(13px, 2.5vh, 18px);
+  }
+  .lotd-trace-actions {
+    gap: clamp(6px, 1.5vw, 12px);
+  }
+  .lotd-clear-btn {
+    padding: clamp(6px, 1.2vh, 10px) clamp(14px, 3vw, 20px);
+    font-size: clamp(13px, 2.5vh, 18px);
+  }
+
+  /* ---- LOTD Find It ---- */
+  .lotd-findit-wrap {
+    gap: clamp(4px, 1vh, 8px);
+    padding-top: clamp(2px, 0.5vh, 4px);
+  }
+  .lotd-findit-timer {
+    font-size: clamp(16px, 3vh, 24px);
+    padding: clamp(2px, 0.5vh, 4px) clamp(10px, 2.5vw, 16px);
+  }
+  .lotd-findit-score {
+    font-size: clamp(14px, 2.5vh, 20px);
+  }
+  .lotd-findit-grid {
+    aspect-ratio: unset;
+    max-height: clamp(200px, 50vh, 300px);
+  }
+  .lotd-findit-slot {
+    aspect-ratio: unset;
+    height: clamp(60px, 15vh, 92px);
+  }
+  .lotd-findit-card {
+    font-size: clamp(24px, 5.5vh, 38px);
+  }
+
+  /* ---- LOTD Yes/No ---- */
+  .lotd-yesno-wrap {
+    gap: clamp(6px, 1.2vh, 10px);
+    padding-top: clamp(2px, 0.5vh, 4px);
+  }
+  .lotd-yesno-card {
+    padding: clamp(8px, 1.5vh, 14px) clamp(16px, 4vw, 28px);
+    gap: clamp(4px, 1vh, 8px);
+  }
+  .lotd-yesno-emoji {
+    font-size: clamp(48px, 10vh, 72px);
+  }
+  .lotd-yesno-word {
+    font-size: clamp(20px, 4vh, 30px);
+  }
+  .lotd-yesno-btns {
+    gap: clamp(8px, 2vw, 14px);
+  }
+  .lotd-yn-btn {
+    padding: clamp(10px, 2vh, 14px);
+    font-size: clamp(16px, 3vh, 22px);
+  }
+  .lotd-yesno-feedback {
+    font-size: clamp(13px, 2.5vh, 18px);
+    min-height: 1.5em;
+  }
+  .lotd-yesno-progress .progress-dot {
+    width: clamp(8px, 1.5vh, 12px);
+    height: clamp(8px, 1.5vh, 12px);
+  }
+
+  /* ---- LOTD Done ---- */
+  .lotd-done-wrap {
+    gap: clamp(6px, 1.2vh, 12px);
+    padding-top: clamp(8px, 2vh, 14px);
+  }
+  .lotd-done-dino {
+    font-size: clamp(56px, 12vh, 90px);
+  }
+  .lotd-done-title {
+    font-size: clamp(20px, 4vh, 32px);
+  }
+  .lotd-done-score {
+    font-size: clamp(16px, 3vh, 22px);
+    padding: clamp(4px, 1vh, 8px) clamp(14px, 3vw, 20px);
+  }
+
+  /* ---- LOTD Letter Picker ---- */
+  .lotd-picker-wrap {
+    padding: clamp(2px, 0.5vh, 4px) clamp(6px, 1.5vw, 12px);
+    gap: clamp(1px, 0.3vh, 3px);
+    justify-content: flex-start;
+    max-width: 95%;
+  }
+  .lotd-picker-title {
+    font-size: clamp(16px, 3vh, 24px);
+    margin-bottom: 1px;
+  }
+  .lotd-picker-subtitle {
+    font-size: clamp(10px, 1.8vh, 14px);
+    margin-bottom: clamp(2px, 0.5vh, 6px);
+  }
+  .lotd-picker-grid {
+    grid-template-columns: repeat(13, 1fr);
+    gap: clamp(3px, 0.6vh, 5px);
+    max-width: 100%;
+    padding: 0 4px;
+  }
+  .lotd-picker-btn {
+    font-size: clamp(13px, 2.8vh, 18px);
+    border-radius: 6px;
+    box-shadow: 0 2px 0 rgba(0,0,0,0.2);
+    aspect-ratio: 1;
+  }
+
+  /* ========== Celebration Overlay ========== */
+  .celebration-overlay {
+    gap: clamp(10px, 2vh, 20px);
+  }
+  .celebration-dino {
+    font-size: clamp(60px, 12vh, 100px);
+  }
+  .celebration-text {
+    font-size: clamp(24px, 5vh, 36px);
+  }
+  .next-btn {
+    min-width: clamp(140px, 30vw, 220px);
+    min-height: clamp(48px, 9vh, 68px);
+    font-size: clamp(18px, 3.5vh, 28px);
+  }
+
+  /* ========== Stomp Results Overlay ========== */
+  .results-overlay {
+    gap: clamp(8px, 1.5vh, 14px);
+  }
+  .results-dino {
+    font-size: clamp(48px, 10vh, 80px);
+  }
+  .results-title {
+    font-size: clamp(22px, 4.5vh, 34px);
+  }
+  .results-stomp-count {
+    font-size: clamp(16px, 3vh, 26px);
+  }
+  .results-stars {
+    font-size: clamp(22px, 4.5vh, 36px);
+    gap: clamp(4px, 1vw, 8px);
+  }
+  .results-rating {
+    font-size: clamp(18px, 3.5vh, 28px);
+  }
+  .results-buttons {
+    gap: clamp(8px, 2vw, 14px);
+  }
+  .play-again-btn, .home-btn-large {
+    min-width: clamp(110px, 25vw, 160px);
+    min-height: clamp(48px, 8vh, 64px);
+    font-size: clamp(16px, 3vh, 22px);
+  }
 }
 
 /* ============================================================
@@ -2317,6 +2792,79 @@ body {
   font-size: clamp(16px, 4vw, 22px);
   text-align: center;
   min-height: 2em;
+}
+
+/* ---- Letter Picker ---- */
+.lotd-picker-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: clamp(6px, 1.5vw, 14px);
+  width: 100%;
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+.lotd-picker-title {
+  font-family: 'Lilita One', cursive;
+  font-size: clamp(22px, 5vw, 36px);
+  color: #FFD700;
+  text-shadow: 2px 2px 0 rgba(0,0,0,0.3);
+  margin-bottom: 2px;
+}
+
+.lotd-picker-subtitle {
+  font-size: clamp(12px, 2.5vw, 18px);
+  color: rgba(255,255,255,0.7);
+  margin-bottom: clamp(6px, 1.5vw, 14px);
+  font-family: 'Lilita One', sans-serif;
+}
+
+.lotd-picker-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(48px, 1fr));
+  gap: 8px;
+  width: 100%;
+  max-width: 420px;
+  padding: 0 8px;
+}
+
+.lotd-picker-btn {
+  aspect-ratio: 1;
+  font-family: 'Lilita One', cursive;
+  font-size: clamp(18px, 4vw, 26px);
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+  color: white;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  box-shadow: 0 3px 0 rgba(0,0,0,0.2);
+  animation: lotdPickerPop 0.3s ease both;
+  text-shadow: 1px 1px 0 rgba(0,0,0,0.25);
+}
+
+.lotd-picker-btn:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 5px 0 rgba(0,0,0,0.2);
+}
+
+.lotd-picker-btn:active {
+  transform: translateY(1px) scale(0.97);
+  box-shadow: 0 1px 0 rgba(0,0,0,0.2);
+}
+
+@keyframes lotdPickerPop {
+  from { opacity: 0; transform: scale(0.5); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* ---- Done screen home button variant ---- */
+.lotd-home-btn {
+  background: linear-gradient(135deg, #3498db, #2171a6);
+  border-color: #1a5276;
+  box-shadow: 0 6px 0 #154360, 0 8px 16px rgba(0,0,0,0.3);
 }
 
 /* ---- Done ---- */

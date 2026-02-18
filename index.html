@@ -4,7 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>Dino Learn - Interactive Learning for Kids</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=20260218b">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
 </head>
 <body>
   <!-- Home Screen -->
@@ -13,7 +16,7 @@
     <div class="app-title">DINO LEARN!</div>
     <div class="game-buttons">
       <div class="game-buttons-row lotd-row">
-        <button class="game-btn btn-lotd" data-game="lotd">⭐ Letter of the Day!</button>
+        <button class="game-btn btn-lotd" data-game="lotd">🔤 Letter Explorer!</button>
       </div>
       <div class="game-buttons-row">
         <button class="game-btn btn-spell" data-game="spell">🔤 Spell It!</button>
@@ -177,9 +180,53 @@
     <button class="next-btn" id="nextBtn">NEXT ➡️</button>
   </div>
 
-  <script src="audio.js"></script>
-  <script src="games.js"></script>
-  <script src="lotd.js"></script>
-  <script src="main.js"></script>
+  <script src="audio.js?v=20260218a"></script>
+  <script src="games.js?v=20260218a"></script>
+  <script src="lotd.js?v=20260218a"></script>
+  <script src="main.js?v=20260218a"></script>
+  <script>
+    // Inline override: ensure startLOTD always shows the letter picker
+    // (guards against browser caching old lotd.js)
+    (function() {
+      var _origStartLOTD = typeof startLOTD === 'function' ? startLOTD : null;
+      window.startLOTD = function() {
+        lotdState.activity = 'picker';
+        showScreen('lotdScreen');
+        if (typeof showLetterPicker === 'function') {
+          showLetterPicker();
+        } else {
+          // Fallback: build picker inline if lotd.js is stale
+          var content = document.getElementById('lotdContent');
+          var progressEl = document.getElementById('lotdProgress');
+          if (progressEl) progressEl.innerHTML = '';
+          var headerEl = document.getElementById('lotdHeaderLetter');
+          if (headerEl) headerEl.textContent = '';
+          var letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+          var colors = ['#e74c3c','#e67e22','#f1c40f','#27ae60','#3498db','#9b59b6','#1abc9c','#e84393'];
+          content.innerHTML = '<div class="lotd-picker-wrap">' +
+            '<div class="lotd-picker-title">🔤 Pick a Letter!</div>' +
+            '<div class="lotd-picker-subtitle">Choose a letter to explore</div>' +
+            '<div class="lotd-picker-grid" id="letterPickerGrid"></div></div>';
+          var grid = document.getElementById('letterPickerGrid');
+          letters.split('').forEach(function(L, i) {
+            var btn = document.createElement('button');
+            btn.className = 'lotd-picker-btn';
+            btn.textContent = L;
+            btn.style.animationDelay = (i * 0.03) + 's';
+            btn.style.background = colors[i % colors.length];
+            btn.addEventListener('click', function() {
+              if (typeof audioCtx !== 'undefined' && audioCtx) sounds.tap();
+              lotdState.letter = L;
+              var hdr = document.getElementById('lotdHeaderLetter');
+              if (hdr) hdr.textContent = L;
+              showLOTDIntro();
+            });
+            grid.appendChild(btn);
+          });
+          if (typeof audioCtx !== 'undefined' && audioCtx && typeof sounds !== 'undefined') sounds.instructionChime();
+        }
+      };
+    })();
+  </script>
 </body>
 </html>
